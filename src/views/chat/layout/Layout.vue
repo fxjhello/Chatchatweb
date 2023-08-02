@@ -35,11 +35,11 @@ const getContainerClass = computed(() => {
 </script>
 
 <template>
-  <div class="h-full dark:bg-[#24272e] transition-all" :class="[isMobile ? 'p-0' : 'p-4']">
-    <div class="h-full overflow-hidden" :class="getMobileClass">
+  <div class="h-full dark:bg-[#24272e] transition-all  bg-[#f5f5f5]" :class="[isMobile ? 'p-0' : 'p-4']">
+    <div class="h-full overflow-hidden " :class="getMobileClass">
       <NLayout class="z-40 transition" :class="getContainerClass" has-sider>
         <Sider />
-        <NLayoutContent class="h-full">
+        <NLayoutContent class="h-full ">
           <RouterView v-slot="{ Component, route }">
             <component :is="Component" :key="route.fullPath" />
           </RouterView>

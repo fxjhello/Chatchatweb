@@ -1,20 +1,20 @@
 <script setup lang='ts'>
 import type { Ref } from 'vue'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { NAutoComplete, NButton, NInput, useDialog, useMessage } from 'naive-ui'
 import html2canvas from 'html2canvas'
 import { Message } from './components'
 import { useScroll } from './hooks/useScroll'
 import { useChat } from './hooks/useChat'
 import { useUsingContext } from './hooks/useUsingContext'
 import HeaderComponent from './components/Header/index.vue'
-import { HoverButton, SvgIcon } from '@/components/common'
+import { SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
 import { fetchChatAPIProcess } from '@/api'
 import { t } from '@/locales'
+import { useIconRender } from '@/hooks/useIconRender'
+const { iconRender } = useIconRender()
 
 let controller = new AbortController()
 
@@ -461,6 +461,29 @@ onUnmounted(() => {
   if (loading.value)
     controller.abort()
 })
+
+// 菜单及弹出框
+const message = useMessage()
+const options = [
+  {
+    label: '开启上下文',
+    key: 'brown\'s hotel, london',
+    icon: iconRender({ icon: 'ri:chat-history-line' }),
+  },
+  {
+    label: '导出对话',
+    key: 'atlantis nahamas, nassau',
+    icon: iconRender({ icon: 'ri:download-2-line' }),
+  },
+  {
+    label: '清空对话记录',
+    key: 'the beverly hills hotel, los angeles',
+    icon: iconRender({ icon: 'ri:delete-bin-line' }),
+  },
+]
+const handleSelect = (key: string | number) => {
+  message.info(String(key))
+}
 </script>
 
 <template>
@@ -502,7 +525,7 @@ onUnmounted(() => {
                   <template #icon>
                     <SvgIcon icon="ri:stop-circle-line" />
                   </template>
-									{{ t('common.stopResponding') }}
+                  {{ t('common.stopResponding') }}
                 </NButton>
               </div>
             </div>
@@ -513,7 +536,16 @@ onUnmounted(() => {
     <footer :class="footerClass">
       <div class="w-full max-w-screen-xl m-auto">
         <div class="flex items-center justify-between space-x-2">
-          <HoverButton v-if="!isMobile" @click="handleClear">
+          <n-dropdown
+            trigger="hover"
+            :options="options"
+            :show-arrow="true"
+            placement="bottom"
+            @select="handleSelect"
+          >
+            <n-button><SvgIcon icon="ep:menu" style="height: 24px;width: fit-content;" /></n-button>
+          </n-dropdown>
+          <!--  <HoverButton v-if="!isMobile" @click="handleClear">
             <span class="text-xl text-[#4f555e] dark:text-white">
               <SvgIcon icon="ri:delete-bin-line" />
             </span>
@@ -527,7 +559,7 @@ onUnmounted(() => {
             <span class="text-xl" :class="{ 'text-[#4b9e5f]': usingContext, 'text-[#a8071a]': !usingContext }">
               <SvgIcon icon="ri:chat-history-line" />
             </span>
-          </HoverButton>
+          </HoverButton> -->
           <NAutoComplete v-model:value="prompt" :options="searchOptions" :render-label="renderOption">
             <template #default="{ handleInput, handleBlur, handleFocus }">
               <NInput
