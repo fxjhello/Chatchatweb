@@ -113,6 +113,7 @@ async function onConversation() {
         onDownloadProgress: ({ event }) => {
           const xhr = event.target
           const { responseText } = xhr
+
           // Always process the final line
           const lastIndex = responseText.lastIndexOf('\n', responseText.length - 2)
           let chunk = responseText
@@ -120,12 +121,13 @@ async function onConversation() {
             chunk = responseText.substring(lastIndex)
           try {
             const data = JSON.parse(chunk)
+
             updateChat(
               +uuid,
               dataSources.value.length - 1,
               {
                 dateTime: new Date().toLocaleString(),
-                text: lastText + (data.text ?? ''),
+                text: lastText + (data.choices[0].message.content ?? ''),
                 inversion: false,
                 error: false,
                 loading: true,
@@ -136,7 +138,7 @@ async function onConversation() {
 
             if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
               options.parentMessageId = data.id
-              lastText = data.text
+              lastText = data.choices[0].message.content
               message = ''
               return fetchChatAPIOnce()
             }
@@ -144,7 +146,6 @@ async function onConversation() {
             scrollToBottomIfAtBottom()
           }
           catch (error) {
-            //
           }
         },
       })
@@ -154,8 +155,9 @@ async function onConversation() {
     await fetchChatAPIOnce()
   }
   catch (error: any) {
-    const errorMessage = error?.message ?? t('common.wrong')
+    console.log(error)
 
+    const errorMessage = error?.message ?? t('common.wrong') + 1111
     if (error.message === 'canceled') {
       updateChatSome(
         +uuid,
@@ -256,7 +258,7 @@ async function onRegenerate(index: number) {
               index,
               {
                 dateTime: new Date().toLocaleString(),
-                text: lastText + (data.text ?? ''),
+                text: lastText + (data.choices[0].message.content ?? ''),
                 inversion: false,
                 error: false,
                 loading: true,
@@ -267,7 +269,7 @@ async function onRegenerate(index: number) {
 
             if (openLongReply && data.detail.choices[0].finish_reason === 'length') {
               options.parentMessageId = data.id
-              lastText = data.text
+              lastText = data.choices[0].message.content
               message = ''
               return fetchChatAPIOnce()
             }

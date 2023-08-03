@@ -34,7 +34,21 @@ export function fetchChatAPIProcess<T = any>(
     prompt: params.prompt,
     options: params.options,
   }
-
+  data = {
+    model: 'baichuan-13b-chat',
+    // stream: true,
+    messages: [
+      {
+        role: 'system',
+        content: '以下{}中的问题，中医式的回答。',
+      },
+      {
+        role: 'user',
+        content: `{${params.prompt}}`,
+      },
+    ],
+    temperature: 0,
+  }
   if (authStore.isChatGPTAPI) {
     data = {
       ...data,
@@ -45,7 +59,7 @@ export function fetchChatAPIProcess<T = any>(
   }
 
   return post<T>({
-    url: '/chat-process',
+    url: '/v1/chat/completions',
     data,
     signal: params.signal,
     onDownloadProgress: params.onDownloadProgress,
