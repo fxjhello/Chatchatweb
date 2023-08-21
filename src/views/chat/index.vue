@@ -155,7 +155,16 @@ async function onConversation() {
     await fetchChatAPIOnce()
   }
   catch (error: any) {
-    console.log(error)
+    if (error.id) {
+      updateChatSome(
+        +uuid,
+        dataSources.value.length - 1,
+        {
+          loading: false,
+        },
+      )
+      return
+    }
 
     const errorMessage = error?.message ?? t('common.wrong') + 1111
     if (error.message === 'canceled') {
@@ -284,6 +293,16 @@ async function onRegenerate(index: number) {
     await fetchChatAPIOnce()
   }
   catch (error: any) {
+    if (error.id) {
+      updateChatSome(
+        +uuid,
+        index,
+        {
+          loading: false,
+        },
+      )
+      return
+    }
     if (error.message === 'canceled') {
       updateChatSome(
         +uuid,
@@ -465,26 +484,46 @@ onUnmounted(() => {
 })
 
 // 菜单及弹出框
-const message = useMessage()
 const options = [
   {
     label: '开启上下文',
-    key: 'brown\'s hotel, london',
+    key: 'toggleUsingContext',
     icon: iconRender({ icon: 'ri:chat-history-line' }),
   },
   {
     label: '导出对话',
-    key: 'atlantis nahamas, nassau',
+    key: 'handleExport',
     icon: iconRender({ icon: 'ri:download-2-line' }),
   },
   {
     label: '清空对话记录',
-    key: 'the beverly hills hotel, los angeles',
+    key: 'handleClear',
     icon: iconRender({ icon: 'ri:delete-bin-line' }),
   },
 ]
+// 定义一个对象，对象和方法一一对应
+interface MyObject {
+  toggleUsingContext: () => void
+  handleExport: () => void
+  handleClear: () => void
+  [key: string]: () => void // 添加索引签名
+}
+
+const actions: MyObject = {
+  toggleUsingContext: () => {
+    toggleUsingContext()
+  },
+  handleExport: () => {
+    handleExport()
+  },
+  handleClear: () => {
+    handleClear()
+  },
+}
 const handleSelect = (key: string | number) => {
-  message.info(String(key))
+  key = String(key)
+  // 执行对应的方法
+  actions[key]()
 }
 </script>
 

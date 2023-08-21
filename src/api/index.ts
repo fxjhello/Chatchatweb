@@ -39,10 +39,6 @@ export function fetchChatAPIProcess<T = any>(
     // stream: true,
     messages: [
       {
-        role: 'system',
-        content: '以下{}中的问题，中医式的回答。',
-      },
-      {
         role: 'user',
         content: `{${params.prompt}}`,
       },

@@ -7,14 +7,14 @@ interface Props {
   usingContext: boolean
 }
 
-interface Emit {
+/* interface Emit {
   (ev: 'export'): void
   (ev: 'handleClear'): void
-}
+} */
 
 defineProps<Props>()
 
-const emit = defineEmits<Emit>()
+/* const emit = defineEmits<Emit>() */
 
 const appStore = useAppStore()
 const chatStore = useChatStore()
@@ -32,13 +32,17 @@ function onScrollToTop() {
     nextTick(() => scrollRef.scrollTop = 0)
 }
 
-function handleExport() {
+const handleknowledge = () => {
+  appStore.setKnowledge(!collapsed.value)
+}
+
+/* function handleExport() {
   emit('export')
 }
 
 function handleClear() {
   emit('handleClear')
-}
+} */
 </script>
 
 <template>
@@ -55,21 +59,26 @@ function handleClear() {
           <SvgIcon v-else class="text-2xl" icon="ri:align-right" />
         </button>
       </div>
-      <h1
+      <!-- <h1
         class="flex-1 px-4 pr-6 overflow-hidden cursor-pointer select-none text-ellipsis whitespace-nowrap"
         @dblclick="onScrollToTop"
       >
         {{ currentChatHistory?.title ?? '' }}
-      </h1>
+      </h1> -->
+      <img
+        class="w-2/3 h-2/3"
+        src="@/assets/logo.png"
+        alt=""
+      >
       <div class="flex items-center space-x-2">
-        <HoverButton @click="handleExport">
+        <!--  <HoverButton @click="handleExport">
           <span class="text-xl text-[#4f555e] dark:text-white">
             <SvgIcon icon="ri:download-2-line" />
           </span>
-        </HoverButton>
-        <HoverButton @click="handleClear">
-          <span class="text-xl text-[#4f555e] dark:text-white">
-            <SvgIcon icon="ri:delete-bin-line" />
+        </HoverButton> -->
+        <HoverButton @click="handleknowledge">
+          <span class="text-2xl text-[#4f555e] dark:text-white">
+            <SvgIcon icon="material-symbols:bookmark-manager-outline-sharp" />
           </span>
         </HoverButton>
       </div>

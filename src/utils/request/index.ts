@@ -7,6 +7,9 @@ export interface HttpOption {
   data?: any
   method?: string
   headers?: any
+  params?: any
+  onUploadProgress?: any
+  responseType?: any
   onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void
   signal?: GenericAbortSignal
   beforeRequest?: () => void
@@ -25,13 +28,13 @@ function http<T = any>(
   const successHandler = (res: AxiosResponse<Response<T>>) => {
     const authStore = useAuthStore()
 
-    if (res.data.status === 'Success' || typeof res.data === 'string')
-      return res.data
+    /*  if (res.data.status === 'Success' || typeof res.data === 'string') */
+    return res.data
 
-    if (res.data.status === 'Unauthorized') {
+    /*  if (res.data.status === 'Unauthorized') {
       authStore.removeToken()
       window.location.reload()
-    }
+    } */
 
     return Promise.reject(res.data)
   }

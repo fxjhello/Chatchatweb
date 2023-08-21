@@ -16,6 +16,7 @@ declare module 'vue' {
     NaiveProvider: typeof import('./components/common/NaiveProvider/index.vue')['default']
     NAutoComplete: typeof import('naive-ui')['NAutoComplete']
     NButton: typeof import('naive-ui')['NButton']
+    NCard: typeof import('naive-ui')['NCard']
     NDropdown: typeof import('naive-ui')['NDropdown']
     NIcon: typeof import('naive-ui')['NIcon']
     NInput: typeof import('naive-ui')['NInput']

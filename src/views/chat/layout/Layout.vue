@@ -3,10 +3,10 @@ import { computed } from 'vue'
 import { NLayout, NLayoutContent } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import Sider from './sider/index.vue'
+import Right from './right/index.vue'
 import Permission from './Permission.vue'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useAppStore, useAuthStore, useChatStore } from '@/store'
-
 const router = useRouter()
 const appStore = useAppStore()
 const chatStore = useChatStore()
@@ -29,7 +29,7 @@ const getMobileClass = computed(() => {
 const getContainerClass = computed(() => {
   return [
     'h-full',
-    { 'pl-[260px]': !isMobile.value && !collapsed.value },
+    { 'pl-[130px]': !isMobile.value && !collapsed.value },
   ]
 })
 </script>
@@ -39,10 +39,15 @@ const getContainerClass = computed(() => {
     <div class="h-full overflow-hidden " :class="getMobileClass">
       <NLayout class="z-40 transition" :class="getContainerClass" has-sider>
         <Sider />
-        <NLayoutContent class="h-full ">
-          <RouterView v-slot="{ Component, route }">
-            <component :is="Component" :key="route.fullPath" />
-          </RouterView>
+        <NLayoutContent class="h-full">
+          <NLayout class="z-40 transition" :class="getContainerClass" has-sider sider-placement="right">
+            <NLayoutContent class="h-full">
+              <RouterView v-slot="{ Component, route }">
+                <component :is="Component" :key="route.fullPath" />
+              </RouterView>
+            </NLayoutContent>
+            <Right />
+          </NLayout>
         </NLayoutContent>
       </NLayout>
     </div>

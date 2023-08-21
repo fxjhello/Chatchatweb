@@ -1,35 +1,24 @@
 <script setup lang='ts'>
 import type { CSSProperties } from 'vue'
-import { computed, ref, watch } from 'vue'
-import { NButton, NLayoutSider } from 'naive-ui'
 import List from './List.vue'
-import Footer from './Footer.vue'
-import { useAppStore, useChatStore } from '@/store'
+import { useAppStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { PromptStore } from '@/components/common'
-
+import plus from '@/assets/plus.svg'
 const appStore = useAppStore()
-const chatStore = useChatStore()
 
 const { isMobile } = useBasicLayout()
 const show = ref(false)
 
-const collapsed = computed(() => appStore.siderCollapsed)
-
-function handleAdd() {
-  chatStore.addHistory({ title: 'New Chat', uuid: Date.now(), isEdit: false })
-  if (isMobile.value)
-    appStore.setSiderCollapsed(true)
-}
+const collapsed = computed(() => appStore.knowledge)
 
 function handleUpdateCollapsed() {
-  appStore.setSiderCollapsed(!collapsed.value)
+  appStore.setKnowledge(!collapsed.value)
 }
 
 const getMobileClass = computed<CSSProperties>(() => {
   if (isMobile.value) {
     return {
-      position: 'fixed',
       zIndex: 50,
     }
   }
@@ -42,13 +31,14 @@ const mobileSafeArea = computed(() => {
       paddingBottom: 'env(safe-area-inset-bottom)',
     }
   }
-  return {}
+  return {
+  }
 })
 
 watch(
   isMobile,
   (val) => {
-    appStore.setSiderCollapsed(val)
+    appStore.setKnowledge(val)
   },
   {
     immediate: true,
@@ -60,32 +50,33 @@ watch(
 <template>
   <NLayoutSider
     :collapsed="collapsed"
+    collapse-mode="width"
     :collapsed-width="0"
-    :width="260"
+    :width="340"
+    :native-scrollbar="true"
     :show-trigger="isMobile ? (collapsed ? false : 'arrow-circle') : 'arrow-circle'"
-    collapse-mode="transform"
-    position="absolute"
     bordered
+
     :style="getMobileClass"
     @update-collapsed="handleUpdateCollapsed"
   >
     <div class="flex flex-col h-full bg-[#f5f5f5]" :style="mobileSafeArea">
       <main class="flex flex-col flex-1 min-h-0">
         <div class="p-4">
-          <NButton dashed block @click="handleAdd">
-            {{ $t('chat.newChatButton') }}
-          </NButton>
+          <n-card class=" !rounded-2xl">
+            <template #header>
+              <div class="flex cursor-pointer items-center w-[88%]">
+                <img :src="plus" style="width: 32px; height: fit-content;">
+                <span class="text-ellipsis overflow-hidden inline-block whitespace-nowrap ml-3">新建知识库</span>
+              </div>
+            </template>
+            <p>点击知识库标题进入知识库管理</p>
+          </n-card>
         </div>
         <div class="flex-1 min-h-0 pb-4 overflow-hidden">
           <List />
         </div>
-        <div class="p-4">
-          <NButton block @click="show = true">
-            {{ $t('store.siderButton') }}
-          </NButton>
-        </div>
       </main>
-      <Footer />
     </div>
   </NLayoutSider>
   <template v-if="isMobile">
